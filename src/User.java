@@ -5,14 +5,27 @@ import java.util.ArrayList;
 
 public class User {
 
+	/**
+	 * The BotInterface to be used by this User.
+	 * @see BotInterface
+	 */
 	public BotInterface botInterface;
 
+	/**
+	 * Takes the values and fills in the fields, also initializes the default BotInterface.
+	 * @param name The name of the User to be used.
+	 * @param userId A unique String id to identify this user.
+	 */
 	public User(String name, String userId) {
 		this.name = name;
 		this.userId = userId;
 		this.botInterface = new BotInterface();
 	}
 
+	/**
+	 * Lists all bots the user has instantiated.
+	 * @return A String detailing the user's bots.
+	 */
 	public String getBots() {
 		if (this.bots.size() == 0) {
 			return "You currently have no bots, add one with 'add'.";
@@ -81,10 +94,19 @@ public class User {
 	 */
 	private Object selectedBot = null;
 
+	/**
+	 * Whether or not the user has selected a bot.
+	 * @return A boolean about whether or not the use has selected a bot.
+	 */
 	public boolean hasSelectedBot() {
 		return selectedBot != null;
 	}
 
+	/**
+	 * Selects a current bot for the User.
+	 * @param index The index of the bot to be selected.
+	 * @return Returns a String indicating the success of the action.
+	 */
 	public String selectBot(int index) {
 		Object selectedBot = this.getBotByIndex(index);
 		if (selectedBot == null) {
@@ -94,6 +116,11 @@ public class User {
 		return "Bot " + index + " selected.";
 	}
 
+	/**
+	 * Returns a bot Object given an int index.
+	 * @param desiredIndex The index of the bot to be retrieved.
+	 * @return A bot Object that is at the index.
+	 */
 	private Object getBotByIndex(int desiredIndex) {
 		// Index should start at 0
 		int index = 0;
@@ -111,6 +138,11 @@ public class User {
 		return null;
 	}
 
+	/**
+	 * Speak to the User's currently selected bot.
+	 * @param message What the User wants to say to the bot.
+	 * @return A response message from the bot.
+	 */
 	public String speakTo(String message) {
 		if (!this.hasSelectedBot()) {
 			return "You do not currently have a bot selected.";

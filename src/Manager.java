@@ -15,11 +15,14 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 
 /**
- * The Manager class that manages all of the users and the web server, often invoked from Main .
+ * Manages all of the users and the web server, often used from the main function.
  */
 public class Manager {
 
-	public Manager() {
+	/**
+	 * Starts the webserver listening on port 80 and defines the actions to take for POST requests at "/manage" and "/speak"
+	 */
+	public void startWebServer() {
 		port(80);
 		post("/manage", (request, response) -> {
 			// Do not call request.body() before querying params, it consumes the body
@@ -77,6 +80,10 @@ public class Manager {
 		});
 	}
 
+	/**
+	 * Index of all the bots that can be instantiated by the user.
+	 * @return The String detailing the bots that can be instantiated.
+	 */
 	private String index() {
 		Reflections reflections = new Reflections("Bots", new SubTypesScanner(false));
 		StringBuilder indexStr = new StringBuilder();
@@ -96,6 +103,7 @@ public class Manager {
 
 	/**
 	 * Returns a string containing a help page. This describes how to use the bot manager.
+	 * @return The help String.
 	 */
 	private String help() {
 		return "		This app allows you to create, delete, and speak with bots through Slack. This app adds two slash commands:\n" +
@@ -131,6 +139,12 @@ public class Manager {
 		return user.newBot(botType);
 	}
 
+	/**
+	 * Selects a bot for the user to speak to.
+	 * @param user What user will be selecting the bot.
+	 * @param commands The individual words after the initial "/bots" command in Slack.
+	 * @return A String indicating the success of the action.
+	 */
 	private String selectBot(User user, String[] commands) {
 		if (commands.length < 1) {
 			return "Please provide the number of the bot from this list.\n" + user.getBots();
@@ -141,7 +155,7 @@ public class Manager {
 	}
 
 	/**
-	 * An HashMap of the User objects registered. Each User has a key of their UserId and a value of the internal User
+	 * A HashMap of the User objects registered. Each User has a key of their UserId and a value of the internal User
 	 * object.
 	 * @see User
 	 */
