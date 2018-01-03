@@ -1,0 +1,87 @@
+{
+  "customBehaviour": "Test",
+  "scenario": {
+	"objs": {
+	  "sword": {
+		"methods": {
+		  "grab": {
+			"responses": [
+			  "You pickup the sword and feel the looming weight in your hands."
+			],
+			"valid": true,
+			"class": "Test"
+		  },
+		  "throw": {
+			"valid": true
+		  }
+		},
+		"objs": {
+
+		},
+		"determiner": "a",
+		"animate": false,
+		"preDesc": "heavy silver",
+		"postDesc": ""
+	  },
+	  "note": {
+		"methods": {
+		  "grab": {
+			"responses": [
+			  "You pickup the sword and feel the looming weight in your hands."
+			],
+			"valid": true
+		  },
+		  "enter": {
+			"responses": [
+			  "You enter the office building. (Not really)"
+			]
+
+		  }
+		},
+		"determiner": "a",
+		"animate": false,
+		"preDesc": "small",
+		"postDesc": ""
+	  },
+	  "house": {
+		"objs": {
+		  "door": {
+			"methods": {
+			  "enter": {
+				"responses": [
+				  "The door is locked.",
+				  "The turn the knob but it does not budge."
+				],
+				"valid": true
+			  }
+			},
+			"determiner": "a",
+			"preDesc": "small"
+		  },
+		  "window": {
+			"methods": {
+			  "enter": {
+				"responses": [
+					"You should not see this message."
+				],
+				"valid": true,
+				"class": "Test"
+			  }
+			},
+			"determiner": "a",
+			"preDesc": "cracked"
+		  }
+		},
+		"methods": {
+		  "enter": {
+			"responses": [],
+			"valid": true,
+			"class": "Test"
+		  }
+		},
+		"determiner": "a",
+		"preDesc": "distant white"
+	  }
+	}
+  }
+}
