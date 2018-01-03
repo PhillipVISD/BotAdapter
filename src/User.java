@@ -47,7 +47,8 @@ public class User {
 
 	/**
 	 * Takes the name of the bot type to create and instantiates a class with that type.
-	 * @param type
+	 * @param type A string of the name of the bot to be instantiated.
+	 * @return String indicating the success of the action.
 	 */
 	public String newBot(String type) {
 		int newId = 0;
