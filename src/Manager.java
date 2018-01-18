@@ -1,5 +1,6 @@
 import Interact.BaseBot;
 import Interact.BotInterface;
+import Interact.ExplainOnCreate;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import spark.Spark;
@@ -93,6 +94,7 @@ public class Manager {
 				reflections.getSubTypesOf(Object.class);
 
 		allClasses.addAll(reflections.getSubTypesOf(BaseBot.class));
+		allClasses.addAll(reflections.getSubTypesOf(ExplainOnCreate.class));
 
 		for (Class cls : allClasses) {
 			indexStr.append("\n\t- " + cls.getSimpleName());
@@ -135,8 +137,7 @@ public class Manager {
 		if (commands.length < 1) {
 			return "Please provide what bot you would like to instantiate.";
 		}
-		String botType = commands[0];
-		return user.newBot(botType);
+		return user.newBot(String.join(" ", commands));
 	}
 
 	/**

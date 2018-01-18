@@ -1,5 +1,4 @@
-import Interact.BaseBot;
-import Interact.BotInterface;
+import Interact.*;
 
 import java.util.ArrayList;
 
@@ -53,7 +52,11 @@ public class User {
 	public String newBot(String type) {
 		int newId = 0;
 		try {
-			newId = this.addBot(Class.forName("Bots." + type).newInstance());
+			InstantiateWrapper result = BotCreate.InstantiateBot(type);
+			if (result.hasError) {
+				return result.error;
+			}
+			newId = this.addBot(result.bot);
 		} catch (InstantiationException e) {
 			return "Error while instantiating the class.";
 		} catch (IllegalAccessException e) {
@@ -63,7 +66,14 @@ public class User {
 		} catch (NoClassDefFoundError e) {
 			return "Could not find a class by the name of 'Bots." + type + "', did you capitalize the name?";
 		}
-		return "Successfully added bot with ID: " + newId;
+
+		String returnMsg = "Successfully added bot with ID: " + newId;
+
+		if (this.getBotByIndex(newId) instanceof ExplainOnCreate) {
+			returnMsg += "\nHere is how to use this bot:\n";
+			returnMsg += ((ExplainOnCreate) this.getBotByIndex(newId)).explainString();
+		}
+		return returnMsg;
 	}
 
 	/**
