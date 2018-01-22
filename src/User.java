@@ -1,4 +1,5 @@
 import Interact.*;
+import Io.IOManager;
 
 import java.util.ArrayList;
 
@@ -10,15 +11,18 @@ public class User {
 	 */
 	public BotInterface botInterface;
 
+	private IOManager io;
+
 	/**
 	 * Takes the values and fills in the fields, also initializes the default BotInterface.
 	 * @param name The name of the User to be used.
 	 * @param userId A unique String id to identify this user.
 	 */
-	public User(String name, String userId) {
+	public User(String name, String userId, IOManager ioMangager) {
 		this.name = name;
 		this.userId = userId;
 		this.botInterface = new BotInterface();
+		this.io = ioMangager;
 	}
 
 	/**
@@ -52,13 +56,13 @@ public class User {
 	public String newBot(String type) {
 		int newId = 0;
 		try {
-			InstantiateWrapper result = BotCreate.InstantiateBot(type);
+			InstantiateWrapper result = BotCreate.InstantiateBot(type, io);
 			if (result.hasError) {
 				return result.error;
 			}
 			newId = this.addBot(result.bot);
 		} catch (InstantiationException e) {
-			return "Error while instantiating the class.";
+			return "Error while instantiating the class." + "\n" + e.getMessage();
 		} catch (IllegalAccessException e) {
 			return "Access was denied while retrieving class.";
 		} catch (ClassNotFoundException e) {
@@ -154,11 +158,11 @@ public class User {
 	 * @param message What the User wants to say to the bot.
 	 * @return A response message from the bot.
 	 */
-	public String speakTo(String message) {
+	public String speakTo(String message, String responseUrl) {
 		if (!this.hasSelectedBot()) {
 			return "You do not currently have a bot selected.";
 		}
 		Object bot = this.selectedBot;
-		return this.botInterface.talkTo(message, bot);
+		return this.botInterface.talkTo(message, bot, responseUrl);
 	}
 }

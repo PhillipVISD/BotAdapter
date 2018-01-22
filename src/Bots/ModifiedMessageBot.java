@@ -1,7 +1,6 @@
 package Bots;
 
-import Io.IOInteractable;
-import Io.IOPacket;
+import Io.BotMessage;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -30,11 +29,11 @@ public class ModifiedMessageBot {
 
 	public void Start() {
 		stage = "getQA";
-		packet.output("Please ask me a question.\n@>", true);
+//		packet.output("Please ask me a question.\n@>", true);
 	}
 
 	public void getQA() {
-		input = packet.in;
+//		input = packet.in;
 		input = input.replace("?", "").toLowerCase();
 
 		if (input.equals("quit")) {
@@ -191,10 +190,10 @@ public class ModifiedMessageBot {
 	}
 
 	private String stage = "start";
-	private IOPacket packet;
+	private BotMessage packet;
 
 //	@Override
-//	public IOPacket converse(IOPacket packet) {
+//	public BotMessage converse(BotMessage packet) {
 //		this.packet = packet;
 //		switch (stage) {
 //			case "start":

@@ -4,6 +4,9 @@ import Bots.EmmePsychologyBot;
 import Bots.FoodBot;
 import Bots.InsultBot;
 import Bots.SoccerBot;
+import Io.BaseInteractable;
+import Io.IOManager;
+import org.python.antlr.op.Sub;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -13,7 +16,7 @@ import java.util.Arrays;
  */
 public class BotCreate {
 
-	public static InstantiateWrapper InstantiateBot(String message) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public static InstantiateWrapper InstantiateBot(String message, IOManager io) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		InstantiateWrapper returnWrapper = new InstantiateWrapper();
 
 		String type = message.split("\\s+")[0];
@@ -24,7 +27,19 @@ public class BotCreate {
 
 		Class newCls = Class.forName("Bots." + type);
 
-		if (newCls == SoccerBot.class) {
+		if (BaseInteractable.class.isAssignableFrom(newCls)) { // Check if BaseInteractable is parent
+			try {
+				BaseInteractable newBot = (BaseInteractable) newCls.getConstructor(IOManager.class).newInstance(io);
+				returnWrapper.bot(newBot);
+				newBot.start();
+			} catch (InvocationTargetException e) {
+				returnWrapper.error(e.toString());
+			} catch (NoSuchMethodException e) {
+				returnWrapper.error(e.toString());
+			}
+			return returnWrapper;
+		}
+		else if (newCls == SoccerBot.class) {
 			if (commands.length == 0) {
 				returnWrapper.bot(newCls.newInstance());
 				return returnWrapper;

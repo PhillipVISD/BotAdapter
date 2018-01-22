@@ -3,12 +3,15 @@ package Bots;
 import Interact.ExplainOnCreate;
 import Io.BaseInteractable;
 import Io.IOInteractable;
-import Io.IOPacket;
+import Io.IOManager;
 
 import java.util.Objects;
-import java.util.Scanner;
 
 public class ThreadBot extends BaseInteractable implements IOInteractable, ExplainOnCreate {
+	public ThreadBot(IOManager ioManager) {
+		super(ioManager);
+	}
+
 	public String explainString() {
 		return "This bot is special because it is running in another thread. It uses similar syntax to the System.out.println and " +
 				"input.next while still communicating via Slack.\n\nIt will just copy whatever you say and say it back.";

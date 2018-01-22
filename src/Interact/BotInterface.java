@@ -1,6 +1,9 @@
 package Interact;
 
 import Bots.*;
+import Io.BaseInteractable;
+import Io.UserMessage;
+import org.python.tests.props.PropShadow;
 
 
 /**
@@ -13,7 +16,14 @@ public class BotInterface {
 	 * @param bot The actual bot object to be talked to.
 	 * @return A String message that is the response from the bot.
 	 */
-	public String talkTo(String message, Object bot) {
+	public String talkTo(String message, Object bot, String responseUrl) {
+		if (bot instanceof BaseInteractable) {
+			UserMessage msg = new UserMessage();
+			msg.message = message;
+			msg.respondUrl = responseUrl;
+			((BaseInteractable) bot).queue.add(msg);
+			return "";
+		}
 		if (bot instanceof BaseBot) {
 			return ((BaseBot) bot).talk(message);
 		}

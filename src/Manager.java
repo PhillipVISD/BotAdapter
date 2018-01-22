@@ -1,6 +1,7 @@
 import Interact.BaseBot;
 import Interact.BotInterface;
 import Interact.ExplainOnCreate;
+import Io.IOManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import spark.Spark;
@@ -19,6 +20,8 @@ import static spark.Spark.post;
  * Manages all of the users and the web server, often used from the main function.
  */
 public class Manager {
+
+	private IOManager io;
 
 	/**
 	 * Starts the webserver listening on port 80 and defines the actions to take for POST requests at "/manage" and "/speak"
@@ -63,6 +66,7 @@ public class Manager {
 			String message = request.queryParams("text");
 			String userId = request.queryParams("user_id");
 			String username = request.queryParams("user_name");
+			String responseUrl = request.queryParams("response_url");
 
 			User user = this.getUserObject(userId, username);
 
@@ -72,13 +76,16 @@ public class Manager {
 			else {
 				String[] messageCommands = message.split("\\s+");
 
-				return user.speakTo(message);
+				return user.speakTo(message, responseUrl);
 			}
 		});
 
 		Spark.exception(Exception.class, (exception, request, response) -> {
 			exception.printStackTrace();
 		});
+
+		io = new IOManager();
+		io.run();
 	}
 
 	/**
@@ -178,7 +185,7 @@ public class Manager {
 			}
 		}
 		else {
-			user = new User(userId, name);
+			user = new User(userId, name, io);
 			this.users.put(userId, user);
 		}
 		return user;
