@@ -53,10 +53,10 @@ public class User {
 	 * @param type A string of the name of the bot to be instantiated.
 	 * @return String indicating the success of the action.
 	 */
-	public String newBot(String type) {
+	public String newBot(String type, String responseUrl) {
 		int newId = 0;
 		try {
-			InstantiateWrapper result = BotCreate.InstantiateBot(type, io);
+			InstantiateWrapper result = BotCreate.InstantiateBot(type, io, responseUrl);
 			if (result.hasError) {
 				return result.error;
 			}

@@ -16,7 +16,7 @@ import java.util.Arrays;
  */
 public class BotCreate {
 
-	public static InstantiateWrapper InstantiateBot(String message, IOManager io) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public static InstantiateWrapper InstantiateBot(String message, IOManager io, String responseUrl) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		InstantiateWrapper returnWrapper = new InstantiateWrapper();
 
 		String type = message.split("\\s+")[0];
@@ -30,6 +30,7 @@ public class BotCreate {
 		if (BaseInteractable.class.isAssignableFrom(newCls)) { // Check if BaseInteractable is parent
 			try {
 				BaseInteractable newBot = (BaseInteractable) newCls.getConstructor(IOManager.class).newInstance(io);
+				newBot.returnUrl = responseUrl;
 				returnWrapper.bot(newBot);
 				newBot.start();
 			} catch (InvocationTargetException e) {

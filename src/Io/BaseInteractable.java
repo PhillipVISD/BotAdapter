@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class BaseInteractable extends Thread {
 
-	private String returnUrl; // Return url can be used multiple times, cannot be used after 1 day of waiting -- expired
+	public String returnUrl; // Return url can be used multiple times, cannot be used after 1 day of waiting -- expires
 	private IOManager ioManager;
 
 

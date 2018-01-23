@@ -34,6 +34,8 @@ public class Manager {
 			String userId = request.queryParams("user_id");
 			String username = request.queryParams("user_name");
 
+			String responseUrl = request.queryParams("response_url");
+
 			User user = this.getUserObject(userId, username);
 
 			String[] messageCommands = message.split("\\s+");
@@ -49,7 +51,7 @@ public class Manager {
 				return this.listBots(user);
 			}
 			else if (action.equals("add")) {
-				return this.addBot(user, afterCommand);
+				return this.addBot(user, afterCommand, responseUrl);
 			}
 			else if (action.equals("select")) {
 				return this.selectBot(user, afterCommand);
@@ -140,11 +142,11 @@ public class Manager {
 	 * @param user The user to add the bot to.
 	 * @return A response.
 	 */
-	private String addBot(User user, String[] commands) {
+	private String addBot(User user, String[] commands, String responseUrl) {
 		if (commands.length < 1) {
 			return "Please provide what bot you would like to instantiate.";
 		}
-		return user.newBot(String.join(" ", commands));
+		return user.newBot(String.join(" ", commands), responseUrl);
 	}
 
 	/**
