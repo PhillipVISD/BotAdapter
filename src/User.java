@@ -1,5 +1,4 @@
 import Interact.*;
-import Io.IOManager;
 
 import java.util.ArrayList;
 
@@ -11,18 +10,15 @@ public class User {
 	 */
 	public BotInterface botInterface;
 
-	private IOManager io;
-
 	/**
 	 * Takes the values and fills in the fields, also initializes the default BotInterface.
 	 * @param name The name of the User to be used.
 	 * @param userId A unique String id to identify this user.
 	 */
-	public User(String name, String userId, IOManager ioMangager) {
+	public User(String name, String userId) {
 		this.name = name;
 		this.userId = userId;
 		this.botInterface = new BotInterface();
-		this.io = ioMangager;
 	}
 
 	/**
@@ -48,6 +44,25 @@ public class User {
 
 	}
 
+	public String resetBot(String type) {
+		Class findCls = null;
+		try {
+			findCls = Class.forName("Bots." + type);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+		for (Object bot : this.bots) {
+			if (bot.getClass() == findCls) {
+				this.bots.remove(bot);
+				if (this.selectedBot.getClass() == findCls) {
+					this.selectedBot = null;
+				}
+				break;
+			}
+		}
+		return "Bot successfully reset.";
+	}
+
 	/**
 	 * Takes the name of the bot type to create and instantiates a class with that type.
 	 * @param type A string of the name of the bot to be instantiated.
@@ -56,7 +71,7 @@ public class User {
 	public String newBot(String type, String responseUrl) {
 		int newId = 0;
 		try {
-			InstantiateWrapper result = BotCreate.InstantiateBot(type, io, responseUrl);
+			InstantiateWrapper result = BotCreate.InstantiateBot(type, responseUrl);
 			if (result.hasError) {
 				return result.error;
 			}
@@ -119,16 +134,41 @@ public class User {
 
 	/**
 	 * Selects a current bot for the User.
-	 * @param index The index of the bot to be selected.
 	 * @return Returns a String indicating the success of the action.
 	 */
-	public String selectBot(int index) {
-		Object selectedBot = this.getBotByIndex(index);
+	public String selectBot(String bot, String[] afterCommand, String responseUrl) {
+		Object selectedBot = this.getBotByClass(bot, afterCommand, responseUrl, false);
 		if (selectedBot == null) {
-			return "You don't have " + index + " bots.";
+			return "A bot by that name does not exist.";
+		}
+		else if (selectedBot.getClass() == String.class) {
+			return (String) selectedBot;
 		}
 		this.selectedBot = selectedBot;
-		return "Bot " + index + " selected.";
+		return "Bot " + bot + " selected.";
+	}
+
+	private Object getBotByClass(String type, String[] commands, String responseUrl, boolean calledBySelf) {
+		Class findCls = null;
+		try {
+			findCls = Class.forName("Bots." + type);
+		} catch (ClassNotFoundException e) {
+			return null;
+		}
+		for (Object bot : this.bots) {
+			if (bot.getClass() == findCls) {
+				return bot;
+			}
+		}
+		if (calledBySelf) {
+			return null;
+		}
+		String response = newBot(String.join(" ", commands), responseUrl);
+		Object getBot = getBotByClass(type, commands, responseUrl, true);
+		if (getBot == null) {
+			return response;
+		}
+		return getBot;
 	}
 
 	/**

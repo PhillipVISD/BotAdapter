@@ -1,23 +1,21 @@
 package Io;
 
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BaseInteractable extends Thread {
 
 	public String returnUrl; // Return url can be used multiple times, cannot be used after 1 day of waiting -- expires
-	private IOManager ioManager;
-
-
-	public BaseInteractable(IOManager ioManager) {
-		this.ioManager = ioManager;
-	}
 
 	protected void printOut(String message) {
-		BotMessage msg = new BotMessage();
-		msg.message = message;
-		msg.respondUrl = returnUrl;
-		ioManager.queue.add(msg);
+		try {
+			Unirest.post(returnUrl).body("{\"text\":\"" + message + "\"}").asString(); // This is lazy ^, should port to code that JSON-ifies a list.
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public BlockingQueue<UserMessage> queue = new LinkedBlockingQueue<UserMessage>();

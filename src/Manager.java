@@ -1,16 +1,12 @@
 import Interact.BaseBot;
-import Interact.BotInterface;
 import Interact.ExplainOnCreate;
-import Io.IOManager;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import spark.Spark;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import static spark.Spark.after;
 import static spark.Spark.port;
@@ -20,8 +16,6 @@ import static spark.Spark.post;
  * Manages all of the users and the web server, often used from the main function.
  */
 public class Manager {
-
-	private IOManager io;
 
 	/**
 	 * Starts the webserver listening on port 80 and defines the actions to take for POST requests at "/manage" and "/speak"
@@ -48,16 +42,13 @@ public class Manager {
 			String action = messageCommands[0];
 
 			if (action.equals("list")) {
-				return this.listBots(user);
-			}
-			else if (action.equals("add")) {
-				return this.addBot(user, afterCommand, responseUrl);
+				return this.index();
 			}
 			else if (action.equals("select")) {
-				return this.selectBot(user, afterCommand);
+				return this.selectBot(user, afterCommand, responseUrl);
 			}
-			else if (action.equals("index")) {
-				return this.index();
+			else if (action.equals("reset")) {
+				return this.resetBot(user, afterCommand, responseUrl);
 			}
 			else {
 				return this.help();
@@ -73,7 +64,7 @@ public class Manager {
 			User user = this.getUserObject(userId, username);
 
 			if (!user.hasSelectedBot())  {
-				return "You do not have a selected bot, add one with '/bots select [id]'.";
+				return "You do not have a selected bot, select one with '/bots select [BotName]'.";
 			}
 			else {
 				String[] messageCommands = message.split("\\s+");
@@ -85,9 +76,14 @@ public class Manager {
 		Spark.exception(Exception.class, (exception, request, response) -> {
 			exception.printStackTrace();
 		});
+	}
 
-		io = new IOManager();
-		io.run();
+	private Object resetBot(User user, String[] commands, String responseUrl) {
+		if (commands.length < 1) {
+			return "Please provide the name of the bot you want to reset. Bots:\n\n" + this.index();
+		}
+
+		return user.resetBot(commands[0]);
 	}
 
 	/**
@@ -155,13 +151,12 @@ public class Manager {
 	 * @param commands The individual words after the initial "/bots" command in Slack.
 	 * @return A String indicating the success of the action.
 	 */
-	private String selectBot(User user, String[] commands) {
+	private String selectBot(User user, String[] commands, String responseUrl) {
 		if (commands.length < 1) {
 			return "Please provide the number of the bot from this list.\n" + user.getBots();
 		}
 
-		int index = Integer.parseInt(commands[0]);
-		return user.selectBot(index);
+		return user.selectBot(commands[0], commands, responseUrl);
 	}
 
 	/**
@@ -187,7 +182,7 @@ public class Manager {
 			}
 		}
 		else {
-			user = new User(userId, name, io);
+			user = new User(userId, name);
 			this.users.put(userId, user);
 		}
 		return user;
