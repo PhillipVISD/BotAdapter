@@ -19,11 +19,10 @@ public class IOManager {
 	}
 
 	public static boolean sendText(String text, String url) {
+//		try {
+//			System.out.println("Sending: " + "{\"text\":\"" + text + "\"}");
 		try {
-			Unirest.post(url).body("{\n" +
-					"    \"text\": \"" + text + "\"\n" +
-					"}") // This is lazy ^, should port to code that JSON-ifies a list.
-					.asJson();
+			Unirest.post(url).body("{\"text\":\"" + text + "\"}").asString(); // This is lazy ^, should port to code that JSON-ifies a list.
 		} catch (UnirestException e) {
 			e.printStackTrace();
 			return false;

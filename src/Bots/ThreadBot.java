@@ -32,13 +32,14 @@ public class ThreadBot extends BaseInteractable implements IOInteractable, Expla
 
 	@Override
 	public void run() {
+		super.run();
 		printOut("Type 'stop' to stop, now let's begin: ");
 		String input = getInput();
 		while (!Objects.equals(input, "stop")) {
-			System.out.println(input);
-			System.out.println("Give me another message: ");
+			printOut(input);
+			printOut("Give me another message: ");
 			input = getInput();
 		}
-		System.out.println("Thank you for using ThreadBot");
+		printOut("Thank you for using ThreadBot");
 	}
 }

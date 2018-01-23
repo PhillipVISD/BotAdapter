@@ -23,7 +23,6 @@ public class BaseInteractable extends Thread {
 	public BlockingQueue<UserMessage> queue = new LinkedBlockingQueue<UserMessage>();
 
 	protected String getInput() {
-		int waitTime = 0;
 		while (true) {
 			try {
 				sleep(20);
@@ -40,8 +39,10 @@ public class BaseInteractable extends Thread {
 		}
 	}
 
-//	@Override
-//	public void run() {
-//
-//	}
+	@Override
+	public void run() {
+		if (returnUrl == null) {
+			this.getInput();
+		}
+	}
 }
