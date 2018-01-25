@@ -1,16 +1,16 @@
 package Bots;
 
-import Io.BotMessage;
+import Io.BaseInteractable;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
-
-public class ModifiedMessageBot {
+public class MessageBot extends BaseInteractable {
 
 	public String input;
 	private String line;
@@ -21,24 +21,32 @@ public class ModifiedMessageBot {
 	private boolean inString;
 	private static String dataPath;
 
-	public ModifiedMessageBot(String attr) {
+	public MessageBot(String attr) {
 
 		dataPath = attr;
 
 	}
 
-	public void Start() {
-		stage = "getQA";
-//		packet.output("Please ask me a question.\n@>", true);
+	public MessageBot() {
+		dataPath = "C:\\Users\\cutter.phillip\\Documents\\LeviBot\\src\\happy.txt";
+	}
+
+	@Override
+	public void run() {
+
+		printOut("Please ask me a question.\n@>");
+		input = getInput();
+		input = input.replace("?", "").toLowerCase();
+
+		if (!input.equals("quit")) {
+
+			getQA();
+
+		}
+
 	}
 
 	public void getQA() {
-//		input = packet.in;
-		input = input.replace("?", "").toLowerCase();
-
-		if (input.equals("quit")) {
-			return;
-		}
 
 		try {
 
@@ -64,7 +72,7 @@ public class ModifiedMessageBot {
 
 				if (part1.equals(input)) {
 
-					System.out.println(part2);
+					printOut(part2);
 					getNewResponse(list);
 					inString = true;
 					break;
@@ -99,9 +107,8 @@ public class ModifiedMessageBot {
 
 	public void getNewQuestion(String newQuestion) {
 
-		System.out.println("How would I respond to that?");
-		System.out.print("@>");
-		String input = scan.nextLine();
+		printOut("How would I respond to that?\n@>");
+		String input = getInput();
 
 		if (!input.equals("noresponse")) {
 
@@ -113,30 +120,27 @@ public class ModifiedMessageBot {
 			}
 			catch (IOException e) {
 
-				System.out.println(e.toString());
+				printOut(e.toString());
 
 			}
 
 		}
 
-		Start();
+		run();
 
 	}
 
 	public void getNewResponse(ArrayList list) {
 
 		String printed;
-		System.out.println("Was that an appropriate response?");
-		System.out.print("@>");
-		Scanner scan = new Scanner(System.in);
-		String input = scan.nextLine();
+		printOut("Was that an appropriate response?\n@>");
+		String input = getInput();
 
 		if (input.equals("no")) {
 
-			System.out.println("Please enter a more appropriate response?");
-			System.out.print("@>");
+			printOut("Please enter a more appropriate response?\n@>");
 
-			input = scan.nextLine();
+			input = getInput();
 
 			try {
 
@@ -166,42 +170,27 @@ public class ModifiedMessageBot {
 			}
 			catch (IOException e) {
 
-				System.out.println(e.toString());
+				printOut(e.toString());
 
 			}
 
-			Start();
+			run();
 
 		}
 
 		else if (input.equals("yes")) {
 
-			Start();
+			run();
 
 		}
 
 		else {
 
 			System.out.print("Invalid command. Continuing program.\n");
-			Start();
+			run();
 
 		}
 
 	}
 
-	private String stage = "start";
-	private BotMessage packet;
-
-//	@Override
-//	public BotMessage converse(BotMessage packet) {
-//		this.packet = packet;
-//		switch (stage) {
-//			case "start":
-//				Start();
-//			case "getQA":
-//				getQA();
-//
-//		return this.packet;
-//		}
-//	}
 }
